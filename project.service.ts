@@ -107,6 +107,7 @@ export class ProjectService {
     const headerPrisma = `
     generator client {
       provider = "prisma-client-js"
+      binaryTargets = ["native", "rhel-openssl-3.0.x"]
     }
     
     datasource db {
@@ -122,6 +123,29 @@ export class ProjectService {
     }
     fs.writeFileSync(batPath, lines, 'utf-8');
     this.generateScriptBat(modelsNames, modelsString, path);
+
+    const prismaService = `
+    import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { PrismaClient } from '@prisma/client';
+
+@Injectable()
+export class PrismaService extends PrismaClient {
+  constructor(config: ConfigService) {
+    super({
+      datasources: {
+        db: {
+          url: '${this.config.get('GENERATED_DB_URL') + this.config.get('SCHEMA_URL') + project}',
+        },
+      },
+    });
+  }
+}
+
+    `;
+
+    fs.writeFileSync(path + '/src/prisma/prisma.service.ts', prismaService, 'utf-8');
+
     return models;
   }
 
