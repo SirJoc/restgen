@@ -72,7 +72,7 @@ export class ProjectService {
     const models = [];
     const regex = /model\s+(\w+)\s*{/;
     const headerModels =
-      'DONT MAKE TYPESCRIPT CODE FOR THIS RESPONSE. SERIALIZE RESPONSE. ONLY PRISMA LANGUAGE. AUTOINCREMENT ID. SOURCE CODE FOR PRISMA FILE GIVEN THE NEXT SQL SCRIPT. ONLY MODELS. ONLY CODE TAG IN THE REPONSE. ' +
+      'DONT MAKE TYPESCRIPT CODE FOR THIS RESPONSE. SERIALIZE RESPONSE. ONLY PRISMA LANGUAGE. DEFAULT AUTOINCREMENT ID. SOURCE CODE FOR PRISMA FILE GIVEN THE NEXT SQL SCRIPT. ONLY MODELS. ONLY CODE TAG IN THE REPONSE. VERIFY RELATIONS ' +
       script;
 
     // TODO: CREATE SERVICIO FOR OPENAI
@@ -112,7 +112,7 @@ export class ProjectService {
     
     datasource db {
       provider = "postgresql"
-      url      = ${this.config.get('GENERATED_DB_URL') + this.config.get('SCHEMA_URL') + project}
+      url      = "${this.config.get('GENERATED_DB_URL') + this.config.get('SCHEMA_URL') + project}"
     }
     `;
 
