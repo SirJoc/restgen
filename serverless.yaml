@@ -1,0 +1,37 @@
+# You can give it the name you like to your project
+service: serverless-container
+# We are using aws as a provider in the N. Virginia region (us-east-1) and defined our stage as project
+provider:
+  name: aws
+  stage: project
+  region: us-east-1
+# In this section you can define images that will be built locally and uploaded to ECR
+  ecr:
+    images:
+      saveImage:
+        path: ./
+# We need this in order to allow our lambda to put the images inside of our bucket
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+        - s3:PutObjectAcl
+      Resource: "arn:aws:s3:::${self:custom.bucket}/*"
+# This will be the name of the bucket. Remember that the name of your bucket must be unique ;)
+custom:
+  bucket: ${self:service}-${self:provider.stage}-demo
+# Here we are defining our function and the container previously configured in the ecr section
+functions:
+  save:
+    image:
+      name: saveImage
+# Function level environment variables
+    environment:
+      BUCKET: ${self:custom.bucket}
+# In here we are creating our bucket using cloudformation
+resources:
+  Resources:
+    S3Assets:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.bucket}

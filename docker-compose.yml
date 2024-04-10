@@ -1,0 +1,11 @@
+services:
+  nestjs_api_dev:
+    context: .
+    dockerfile: dockerfile
+  ports:
+    - '80:80'
+  environment:
+    - PORT=80
+    - NODE_ENV=production
+  volumes:
+    - ./src: /app/src
